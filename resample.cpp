@@ -72,13 +72,13 @@ int main(int argc, char *argv[])
 
 
   // new values = (orig/max orig) * 4096
-  size_t orig_c{ 256 }, new_c{ 512 };  // col
-  size_t orig_r{ 256 }, new_r{ 512 };  // row
-  size_t orig_s{ 256 }, new_s{ 512 };  // slab
+  size_t orig_c{ 467 }, new_c{ 3509 };  // col
+  size_t orig_r{ 504 }, new_r{ 3787 };  // row
+  size_t orig_s{ 545 }, new_s{ 4096 };  // slab
 
 
-  Grid<unsigned char> grid{
-      orig_c, orig_r, orig_s, reinterpret_cast<unsigned char*>(image) };
+  Grid<unsigned char> grid{ orig_c, orig_r, orig_s,
+                            reinterpret_cast<unsigned char*>(image) };
 
   size_t slabSize{ new_c * new_r };
   char *slab{ new char[slabSize] };
