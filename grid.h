@@ -8,8 +8,12 @@
 #ifndef RESAMPLE_GRID_H
 #define RESAMPLE_GRID_H
 
+#include <cstddef>
 
-#include <glm/glm.hpp>
+struct vec3f{
+  float x, y, z;
+};
+
 
 template<typename T>
 class Grid
@@ -55,7 +59,7 @@ public:
   T
   interpolate
   (
-      const glm::vec3& location
+      const vec3f& location
   )
   {
     float gx, gy, gz;
