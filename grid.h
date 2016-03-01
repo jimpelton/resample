@@ -1,6 +1,9 @@
 //
 // Created by Jim Pelton on 2/28/16.
+// Note: this code is based on the code found at scratchapixel. Link:
+//   http://www.scratchapixel.com/old/lessons/3d-advanced-lessons/interpolation/trilinear-interpolation/
 //
+// It has been changed a little bit to work for my situation.
 
 #ifndef RESAMPLE_GRID_H
 #define RESAMPLE_GRID_H
@@ -25,7 +28,7 @@ public:
 
   ~Grid() { }
 
-  unsigned IX(unsigned x, unsigned y, unsigned z)
+  size_t IX(size_t x, size_t y, size_t z)
   {
     if (!(x < nx))
       x -= 1;
@@ -35,19 +38,14 @@ public:
 
     if (!(z < nz))
       z -= 1;
-    return x * nx * ny + y * nx + z;
+    return x + nx * (y + ny * z);
+    //return x * nx * ny + y * nx + z;
   }
 
   T
-  bilinear
-      (
-          const T &tx,
-          const T &ty,
-          const T &c00,
-          const T &c10,
-          const T &c01,
-          const T &c11
-      )
+  bilinear(const T &tx, const T &ty,
+      const T &c00, const T &c10,
+      const T &c01, const T &c11)
   {
     T a = c00 * (T(1) - tx) + c10 * tx;
     T b = c01 * (T(1) - tx) + c11 * tx;
@@ -56,35 +54,36 @@ public:
 
   T
   interpolate
-      (
-          const glm::vec3& location
-      )
+  (
+      const glm::vec3& location
+  )
   {
-    T gx, gy, gz;
+    float gx, gy, gz;
+    size_t gxi, gyi, gzi;
+
     T tx, ty, tz;
-    unsigned gxi, gyi, gzi;
 
     // remap point coordinates to grid coordinates
-    gx = location.x * nvoxels;
-    gxi = static_cast<unsigned int>(gx);
+    gx = location.x * nx;
+    gxi = static_cast<size_t>(gx);
     tx = gx - gxi;
 
-    gy = location.y * nvoxels;
-    gyi = static_cast<unsigned int>(gy);
+    gy = location.y * ny;
+    gyi = static_cast<size_t>(gy);
     ty = gy - gyi;
 
-    gz = location.z * nvoxels;
-    gzi = static_cast<unsigned int>(gz);
+    gz = location.z * nz;
+    gzi = static_cast<size_t>(gz);
     tz = gz - gzi;
 
-    const T & c000 = data[IX(gxi, gyi, gzi)];
-    const T & c100 = data[IX(gxi + 1, gyi, gzi)];
-    const T & c010 = data[IX(gxi, gyi + 1, gzi)];
-    const T & c110 = data[IX(gxi + 1, gyi + 1, gzi)];
-    const T & c001 = data[IX(gxi, gyi, gzi + 1)];
-    const T & c101 = data[IX(gxi + 1, gyi, gzi + 1)];
-    const T & c011 = data[IX(gxi, gyi + 1, gzi + 1)];
-    const T & c111 = data[IX(gxi + 1, gyi + 1, gzi + 1)];
+    const T  c000 = data[IX(gxi, gyi, gzi)];
+    const T  c100 = data[IX(gxi + 1, gyi, gzi)];
+    const T  c010 = data[IX(gxi, gyi + 1, gzi)];
+    const T  c110 = data[IX(gxi + 1, gyi + 1, gzi)];
+    const T  c001 = data[IX(gxi, gyi, gzi + 1)];
+    const T  c101 = data[IX(gxi + 1, gyi, gzi + 1)];
+    const T  c011 = data[IX(gxi, gyi + 1, gzi + 1)];
+    const T  c111 = data[IX(gxi + 1, gyi + 1, gzi + 1)];
 
     T e = bilinear(tx, ty, c000, c100, c010, c110);
     T f = bilinear(tx, ty, c001, c101, c011, c111);

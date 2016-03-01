@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
   char *slab{ new char[slabSize] };
   memset(slab, 0, slabSize);
 
+
   for(size_t s{ 0 }; s < new_s; ++s){
     for(size_t r{ 0 }; r < new_r; r++) {
       for(size_t c{ 0 }; c < new_c; c++) {
@@ -95,11 +96,18 @@ int main(int argc, char *argv[])
         slab[c + r*new_c] = ival;
 
       }
-    }
+    } // for r
+
     outFile.write(slab, slabSize);
-    std::cout << "Wrote slab: " << s << std::endl;
+    if (s%10 == 0) {
+      std::cout << "\r Wrote slab: " << s << std::flush;
+    }
+
     memset(slab, 0, slabSize);
-  }
+
+  } // for(s
+
+  std::cout << std::endl;
 
   outFile.flush();
   outFile.close();
