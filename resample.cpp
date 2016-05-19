@@ -41,8 +41,9 @@ size_t computeSlabElements(size_t w, size_t h, size_t d, size_t target)
 
 int main(int argc, char *argv[])
 {
-  if (argc < 3) {
-    std::cout << "Usage: \n\t resample <in-file-name> <out-file-name>" << std::endl;
+  if (argc < 9) {
+    std::cout << "Usage: \n\t resample <in-file-name> <out-file-name>"
+        "<orig_cols> <orig_rows> <orig_slabs> <new_cols> <new_rows> <new_slabs>" << std::endl;
     return 1;
   }
 
@@ -70,10 +71,9 @@ int main(int argc, char *argv[])
   inFile.close();
 
 
-  // new values = (orig/max orig) * 4096
-  size_t orig_c{ 467 }, new_c{ 3509 };  // col
-  size_t orig_r{ 504 }, new_r{ 3787 };  // row
-  size_t orig_s{ 545 }, new_s{ 4096 };  // slab
+  size_t orig_c{ std::stoul(argv[3]) }, new_c{ std::stoul(argv[6]) };  // col
+  size_t orig_r{ std::stoul(argv[4]) }, new_r{ std::stoul(argv[7]) };  // row
+  size_t orig_s{ std::stoul(argv[5]) }, new_s{ std::stoul(argv[8]) };  // slab
 
 
   Grid<unsigned char> grid{ orig_c, orig_r, orig_s,
